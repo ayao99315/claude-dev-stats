@@ -1,0 +1,41 @@
+# Source files
+src/
+tests/
+scripts/test-runner.js
+
+# Development files
+.eslintrc.js
+.prettierrc.js
+jest.config.js
+tsconfig.json
+
+# Documentation (keeping only essential)
+docs/
+*.md
+!README.md
+!CLAUDE.md
+
+# Build artifacts  
+*.tsbuildinfo
+coverage/
+
+# Development dependencies
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Logs
+logs/
+*.log
+
+# Git
+.git/
+.gitignore
