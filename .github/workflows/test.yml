@@ -1,4 +1,4 @@
-name: Test Suite
+name: 测试和覆盖率检查
 
 on:
   push:
@@ -6,45 +6,78 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+env:
+  NODE_VERSION: '18'
+  MINIMUM_COVERAGE: 85
+
 jobs:
   test:
+    name: 运行测试套件
     runs-on: ubuntu-latest
     
     strategy:
       matrix:
         node-version: [16.x, 18.x, 20.x]
-
+        
     steps:
-    - name: Checkout code
+    - name: 检出代码
       uses: actions/checkout@v4
       
-    - name: Setup Node.js ${{ matrix.node-version }}
+    - name: 设置 Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         
-    - name: Install dependencies
+    - name: 安装依赖
       run: npm ci
-      
-    - name: Run linting
-      run: npm run lint
-      
-    - name: Run type checking
-      run: npx tsc --noEmit
-      
-    - name: Run unit tests
-      run: npm test -- --coverage --watchAll=false
-      
-    - name: Run integration tests
+        
+    - name: 运行代码检查
+      run: |
+        npm run lint
+        npm run typecheck
+        
+    - name: 运行单元测试
+      run: npm run test:unit
+        
+    - name: 运行集成测试  
       run: npm run test:integration
-      
-    - name: Upload coverage reports
+        
+    - name: 构建项目
+      run: npm run build
+        
+    - name: 运行E2E测试
+      run: npm run test:e2e
+        
+    - name: 生成测试覆盖率报告
+      run: npm run test:coverage
+        
+    - name: 检查覆盖率阈值
+      run: |
+        node -e "
+        const fs = require('fs');
+        if (!fs.existsSync('coverage/coverage-summary.json')) {
+          console.log('警告: 没有找到覆盖率报告');
+          process.exit(1);
+        }
+        const summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json'));
+        const coverage = summary.total.statements.pct;
+        console.log(\`当前覆盖率: \${coverage}%\`);
+        if (coverage < $MINIMUM_COVERAGE) {
+          console.log(\`❌ 覆盖率 \${coverage}% 低于最低要求 $MINIMUM_COVERAGE%\`);
+          process.exit(1);
+        }
+        console.log(\`✅ 覆盖率 \${coverage}% 满足要求\`);
+        "
+        
+    - name: 上传覆盖率报告到 Codecov
+      if: matrix.node-version == '18.x'
       uses: codecov/codecov-action@v3
       with:
         file: ./coverage/lcov.info
         flags: unittests
         name: codecov-umbrella
+        fail_ci_if_error: false
 
   build:
     runs-on: ubuntu-latest

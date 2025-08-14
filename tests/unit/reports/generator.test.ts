@@ -1,7 +1,84 @@
 /**
- * 报告生成器单元测试
- * 测试报告生成功能的各个方面：缓存、格式化、导出等
+ * ReportGenerator 单元测试
+ * 报告生成器核心功能测试
  */
+
+import { ReportGenerator } from '../../../src/reports/generator';
+import { BasicUsageStats } from '../../../src/types/usage-data';
+import { AnalysisResult, EfficiencyMetrics, TrendAnalysis, SmartInsights } from '../../../src/types/analytics';
+import { ReportType, OutputFormat } from '../../../src/types/reports';
+import { BilingualTextManager } from '../../../src/reports/templates';
+
+jest.mock('../../../src/utils/logger');
+
+describe('ReportGenerator', () => {
+  let generator: ReportGenerator;
+  let mockStats: BasicUsageStats;
+  let mockAnalysis: AnalysisResult;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    
+    generator = new ReportGenerator();
+    
+    mockStats = {
+      total_time_hours: 2.5,
+      total_tokens: 5000,
+      total_cost: 0.15,
+      session_count: 3,
+      files_read: 10,
+      files_written: 5,
+      files_created: 2,
+      data_quality: 'high'
+    };
+
+    mockAnalysis = {
+      basic_stats: mockStats,
+      efficiency: {
+        tokens_per_hour: 2000,
+        estimated_lines_per_hour: 150,
+        productivity_score: 7.5,
+        efficiency_rating: ['excellent'],
+        tool_analysis: {
+          most_used_tool: 'Read',
+          tool_efficiency: { Read: 0.8, Edit: 0.9 },
+          tool_usage_count: { Read: 10, Edit: 5 }
+        }
+      } as EfficiencyMetrics,
+      trends: {
+        direction: 'increasing',
+        strength: 0.7,
+        confidence: 0.8
+      } as TrendAnalysis,
+      insights: {
+        summary: 'Good productivity',
+        recommendations: ['Keep up the good work'],
+        priority_insights: [],
+        areas_for_improvement: []
+      } as SmartInsights,
+      generated_at: new Date().toISOString()
+    };
+  });
+
+  describe('构造函数', () => {
+    test('应该正确初始化', () => {
+      expect(generator).toBeInstanceOf(ReportGenerator);
+    });
+  });
+
+  describe('基础测试', () => {
+    test('应该能创建实例', () => {
+      expect(generator).toBeDefined();
+    });
+    
+    test('应该有正确的方法', () => {
+      expect(typeof generator.generateReport).toBe('function');
+      expect(typeof generator.formatOutput).toBe('function');
+      expect(typeof generator.exportReport).toBe('function');
+      expect(typeof generator.clearCache).toBe('function');
+    });
+  });
+});
 
 import { ReportGenerator } from '../../../src/reports/generator';
 import { ReportConfig, ReportTemplate, ReportType, ReportFormat, Language } from '../../../src/types/reports';

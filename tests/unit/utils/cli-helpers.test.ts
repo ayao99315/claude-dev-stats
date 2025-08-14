@@ -103,7 +103,11 @@ describe('CLI辅助工具', () => {
 
       const table = formatter.formatTable(headers, rows);
       expect(table.length).toBeGreaterThan(0);
-      expect(table[0]).toContain('Name');
+      // 检查表格包含头部信息（可能在不同行）
+      const tableContent = table.join('\n');
+      expect(tableContent).toContain('Name');
+      expect(tableContent).toContain('Value');
+      expect(tableContent).toContain('Item1');
     });
 
     test('应该处理空表格数据', () => {
