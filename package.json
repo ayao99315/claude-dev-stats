@@ -17,6 +17,9 @@
   },
   "files": [
     "dist/**/*",
+    "scripts/install.sh",
+    "scripts/setup.js",
+    "scripts/uninstall.sh",
     "CLAUDE.md",
     "README.md",
     "LICENSE"
@@ -44,6 +47,10 @@
     "typecheck": "tsc --noEmit",
     "install-commands": "node scripts/install-commands.js",
     "setup": "npm run build && npm run install-commands",
+    "setup:wizard": "node scripts/setup.js",
+    "setup:validate": "node scripts/setup.js --validate",
+    "test:install": "node scripts/test-installation.js",
+    "uninstall": "bash scripts/uninstall.sh",
     "precommit": "npm run lint && npm run typecheck && npm run test:unit",
     "prebuild": "npm run clean",
     "postbuild": "npm run validate:build",

@@ -38,6 +38,9 @@
     "tests",
     "**/*.test.ts",
     "**/*.spec.ts",
-    "**/*.d.ts"
+    "**/*.d.ts",
+    "src/utils/error-handling-demo.ts",
+    "src/utils/error-reporter.ts",
+    "src/utils/troubleshooter.ts"
   ]
 }

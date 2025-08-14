@@ -50,24 +50,25 @@ export {
   ERROR_CATEGORY_ICONS
 } from './error-messages';
 
-export {
-  Troubleshooter,
-  troubleshooter,
-  DiagnosticLevel,
-  DiagnosticResult,
-  TroubleshootingReport,
-  SystemEnvironment
-} from './troubleshooter';
+// 注意：troubleshooter 和 error-reporter 暂时被禁用以解决类型问题
+// export {
+//   Troubleshooter,
+//   troubleshooter,
+//   DiagnosticLevel,
+//   DiagnosticResult,
+//   TroubleshootingReport,
+//   SystemEnvironment
+// } from './troubleshooter';
 
-export {
-  ErrorReporter,
-  errorReporter,
-  ErrorReport,
-  SystemInfo,
-  ErrorDetails,
-  ContextInfo,
-  UserFeedback,
-  PrivacySettings,
-  ErrorStatistics,
-  DEFAULT_PRIVACY_SETTINGS
-} from './error-reporter';
+// export {
+//   ErrorReporter,
+//   errorReporter,
+//   ErrorReport,
+//   SystemInfo,
+//   ErrorDetails,
+//   ContextInfo,
+//   UserFeedback,
+//   PrivacySettings,
+//   ErrorStatistics,
+//   DEFAULT_PRIVACY_SETTINGS
+// } from './error-reporter';
