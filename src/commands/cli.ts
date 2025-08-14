@@ -21,6 +21,7 @@ import {
 import { StatsHandler } from './stats-handler';
 import { ParameterValidator } from './validator';
 import { InteractiveHelper } from './interactive';
+import { SmartHintProvider } from '../utils/cli-helpers';
 import { Logger } from '../utils/logger';
 
 export class CommandLineInterface {
@@ -28,6 +29,7 @@ export class CommandLineInterface {
   private statsHandler: StatsHandler;
   private validator: ParameterValidator;
   private interactive: InteractiveHelper;
+  private hintProvider: SmartHintProvider;
   private logger: Logger;
 
   constructor() {
@@ -35,6 +37,7 @@ export class CommandLineInterface {
     this.statsHandler = new StatsHandler();
     this.validator = new ParameterValidator();
     this.interactive = new InteractiveHelper();
+    this.hintProvider = new SmartHintProvider();
     this.logger = new Logger({ 
       level: 'info', 
       colorize: true, 
@@ -347,6 +350,12 @@ export class CommandLineInterface {
     const startTime = Date.now();
     
     try {
+      // 显示命令开始执行提示
+      this.statsHandler.showCommandStart(commandName, options);
+      
+      // 提供预执行智能提示
+      this.providedPreExecutionHints(commandName, options);
+      
       // 显示执行指示器
       if (options.verbose) {
         console.log(chalk.blue(`🚀 执行命令: ${commandName}`));
@@ -357,8 +366,11 @@ export class CommandLineInterface {
       // 验证参数
       this.validator.validateOptions(options, commandName as any);
 
-      // 执行命令
-      const result = await handler();
+      // 使用 StatsHandler 的计时功能执行命令
+      const result = await this.statsHandler.executeWithTiming(
+        handler,
+        commandName
+      );
       
       // 隐藏指示器
       if (!options.verbose) {
@@ -367,15 +379,13 @@ export class CommandLineInterface {
 
       // 显示结果
       if (result.success) {
-        const executionTime = Date.now() - startTime;
-        if (options.verbose) {
-          console.log(chalk.green(`✅ 命令执行成功 (${executionTime}ms)`));
-        }
+        this.statsHandler.showCommandComplete(commandName, true);
         
         if (result.message) {
           console.log(result.message);
         }
       } else {
+        this.statsHandler.showCommandComplete(commandName, false);
         console.error(chalk.red(`❌ 命令执行失败: ${result.error || '未知错误'}`));
         process.exit(1);
       }
@@ -456,6 +466,49 @@ export class CommandLineInterface {
     }
 
     return chalk.yellow('示例:') + '\n  ' + commandExamples.join('\n  ');
+  }
+
+  /**
+   * 显示智能参数提示
+   */
+  private showSmartHints(command: string, args: string[]): void {
+    // 检查是否有 --help 标志，如果有则显示智能提示
+    if (args.includes('--help') || args.includes('-h')) {
+      this.hintProvider.showParameterHints(command, args);
+    }
+  }
+
+  /**
+   * 在命令执行前提供智能提示
+   */
+  private providedPreExecutionHints(command: string, options: any): void {
+    const suggestions: string[] = [];
+
+    // 基于缺失的重要参数提供建议
+    if (command === 'stats' && !options.timeframe) {
+      suggestions.push('💡 提示: 使用 --timeframe 指定时间范围（today/week/month）');
+    }
+
+    if (command === 'export' && !options.output) {
+      suggestions.push('💡 提示: 使用 --output 指定输出文件路径');
+    }
+
+    if (command === 'compare' && !options.baseline) {
+      suggestions.push('💡 提示: 使用 --baseline 指定比较基准期间');
+    }
+
+    // 性能优化建议
+    if (command === 'trends' && !options.granularity) {
+      suggestions.push('💡 提示: 使用 --granularity 控制数据粒度，可提升性能');
+    }
+
+    if (suggestions.length > 0) {
+      console.log('');
+      suggestions.forEach(suggestion => {
+        console.log(chalk.blue(suggestion));
+      });
+      console.log('');
+    }
   }
 
   /**

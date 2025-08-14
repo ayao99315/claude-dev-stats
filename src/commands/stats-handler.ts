@@ -17,6 +17,7 @@ import { AnalyticsEngine } from '../analytics';
 import { ReportGenerator } from '../reports/generator';
 import { Logger } from '../utils/logger';
 import { ConfigManager } from '../utils/config';
+import { PaginationManager } from '../utils/cli-helpers';
 import chalk from 'chalk';
 import fs from 'fs/promises';
 import path from 'path';
@@ -27,11 +28,13 @@ export class StatsHandler {
   private reportGenerator: ReportGenerator;
   private logger: Logger;
   private configManager: ConfigManager;
+  private paginationManager: PaginationManager;
 
   constructor() {
     this.analyticsEngine = new AnalyticsEngine();
     this.reportGenerator = new ReportGenerator();
     this.configManager = new ConfigManager();
+    this.paginationManager = new PaginationManager(20); // 每页20行
     this.logger = new Logger({ 
       level: 'info', 
       colorize: true, 
@@ -99,6 +102,16 @@ export class StatsHandler {
         return {
           success: true,
           message: `${chalk.green('✅ 统计报告已生成')}\n${report}\n\n${chalk.blue('📁 已保存到:')} ${options.output}`
+        };
+      }
+
+      // 检查是否需要分页显示
+      const reportLines = report.split('\n');
+      if (reportLines.length > 25 && options.format !== 'json') {
+        await this.displayPaginatedReport(reportLines, '统计报告');
+        return {
+          success: true,
+          message: ''
         };
       }
 
@@ -797,6 +810,101 @@ export class StatsHandler {
       return analysis.sort((a, b) => (b.avg_time_per_use || 0) - (a.avg_time_per_use || 0));
     default:
       return analysis;
+    }
+  }
+
+  /**
+   * 分页显示报告
+   */
+  private async displayPaginatedReport(reportLines: string[], title: string): Promise<void> {
+    try {
+      console.log(chalk.blue(`\n📄 ${title} (${reportLines.length} 行)`));
+      console.log(chalk.gray('内容较长，将使用分页显示...\n'));
+      
+      await this.paginationManager.displayPaginated(reportLines, title);
+    } catch (error) {
+      // 如果分页显示失败，回退到直接输出
+      console.log(chalk.yellow('分页显示失败，使用普通显示模式\n'));
+      reportLines.forEach(line => console.log(line));
+    }
+  }
+
+  /**
+   * 测量命令执行时间
+   */
+  public async executeWithTiming<T>(
+    operation: () => Promise<T>,
+    operationName: string
+  ): Promise<T> {
+    const startTime = Date.now();
+    
+    try {
+      const result = await operation();
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      
+      this.showExecutionTime(operationName, duration);
+      return result;
+    } catch (error) {
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      
+      console.log(chalk.red(`\n❌ ${operationName} 执行失败 (耗时: ${this.formatDuration(duration)})`));
+      throw error;
+    }
+  }
+
+  /**
+   * 显示执行时间
+   */
+  private showExecutionTime(operationName: string, duration: number): void {
+    const formattedDuration = this.formatDuration(duration);
+    let timeColor = chalk.green;
+    
+    // 根据执行时间选择颜色
+    if (duration > 5000) {
+      timeColor = chalk.red; // 超过5秒显示红色
+    } else if (duration > 2000) {
+      timeColor = chalk.yellow; // 超过2秒显示黄色
+    }
+    
+    console.log(timeColor(`\n⏱️  ${operationName} 执行完成，耗时: ${formattedDuration}`));
+  }
+
+  /**
+   * 格式化时长显示
+   */
+  private formatDuration(ms: number): string {
+    if (ms < 1000) {
+      return `${ms}ms`;
+    } else if (ms < 60000) {
+      return `${(ms / 1000).toFixed(2)}s`;
+    } else {
+      const minutes = Math.floor(ms / 60000);
+      const seconds = ((ms % 60000) / 1000).toFixed(1);
+      return `${minutes}m ${seconds}s`;
+    }
+  }
+
+  /**
+   * 显示命令开始执行提示
+   */
+  public showCommandStart(commandName: string, options: any): void {
+    console.log(chalk.blue(`\n🚀 开始执行 ${commandName} 命令...`));
+    
+    if (process.env.NODE_ENV === 'development' || options.verbose) {
+      console.log(chalk.gray('参数:'), JSON.stringify(options, null, 2));
+    }
+  }
+
+  /**
+   * 显示命令完成提示
+   */
+  public showCommandComplete(commandName: string, success: boolean): void {
+    if (success) {
+      console.log(chalk.green(`\n✅ ${commandName} 命令执行完成`));
+    } else {
+      console.log(chalk.red(`\n❌ ${commandName} 命令执行失败`));
     }
   }
 }

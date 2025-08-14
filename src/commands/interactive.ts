@@ -95,6 +95,96 @@ export class InteractiveHelper {
   }
 
   /**
+   * 显示多阶段进度条
+   */
+  showMultiStageProgress(stages: Array<{ name: string; completed: boolean; current?: boolean }>): void {
+    console.log(chalk.bold.blue('\n📊 执行进度:'));
+    
+    stages.forEach((stage, index) => {
+      let icon: string;
+      let color: any;
+      
+      if (stage.completed) {
+        icon = '✅';
+        color = chalk.green;
+      } else if (stage.current) {
+        icon = '🔄';
+        color = chalk.yellow;
+      } else {
+        icon = '⏳';
+        color = chalk.gray;
+      }
+      
+      const connector = index < stages.length - 1 ? '  │' : '';
+      console.log(`${icon} ${color(stage.name)}${connector}`);
+    });
+  }
+
+  /**
+   * 显示实时任务进度
+   */
+  showTaskProgress(taskName: string, subtasks: Array<{ name: string; status: 'pending' | 'running' | 'completed' | 'failed' }>): void {
+    console.log(chalk.bold.blue(`\n⚙️  ${taskName}:`));
+    
+    subtasks.forEach(subtask => {
+      let icon: string;
+      let color: any;
+      
+      switch (subtask.status) {
+      case 'completed':
+        icon = '✅';
+        color = chalk.green;
+        break;
+      case 'running':
+        icon = '🔄';
+        color = chalk.yellow;
+        break;
+      case 'failed':
+        icon = '❌';
+        color = chalk.red;
+        break;
+      default:
+        icon = '⏳';
+        color = chalk.gray;
+      }
+      
+      console.log(`  ${icon} ${color(subtask.name)}`);
+    });
+  }
+
+  /**
+   * 显示数据加载进度
+   */
+  showDataLoadingProgress(dataSource: string, progress: number): void {
+    const percentage = Math.round(progress * 100);
+    const barLength = 15;
+    const filledLength = Math.round(barLength * progress);
+    
+    const bar = '█'.repeat(filledLength) + '░'.repeat(barLength - filledLength);
+    const progressText = `${chalk.blue('📡')} 加载 ${dataSource}: [${chalk.cyan(bar)}] ${chalk.yellow(percentage + '%')}`;
+    
+    process.stdout.write(`\r${progressText}`);
+    
+    if (progress >= 1) {
+      console.log(chalk.green(' ✓'));
+    }
+  }
+
+  /**
+   * 显示分析进度
+   */
+  showAnalysisProgress(analysisType: string, currentStep: number, totalSteps: number): void {
+    const percentage = Math.round((currentStep / totalSteps) * 100);
+    const progressText = `${chalk.blue('🧠')} 分析${analysisType}: ${chalk.yellow(currentStep)}/${chalk.yellow(totalSteps)} ${chalk.gray(`(${percentage}%)`)}`;
+    
+    process.stdout.write(`\r${progressText}`);
+    
+    if (currentStep >= totalSteps) {
+      console.log(chalk.green(' ✓'));
+    }
+  }
+
+  /**
    * 显示格式化的表格标题
    */
   showTableHeader(title: string): void {
