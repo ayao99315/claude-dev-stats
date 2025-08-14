@@ -16,12 +16,18 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "removeComments": true,
+    "importHelpers": true,
+    "downlevelIteration": true,
+    "noEmitOnError": true,
+    "preserveConstEnums": false,
+    "stripInternal": true
   },
   "include": [
     "src/**/*"
@@ -31,6 +37,7 @@
     "dist",
     "tests",
     "**/*.test.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "**/*.d.ts"
   ]
 }

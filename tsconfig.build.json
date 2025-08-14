@@ -1,0 +1,42 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "sourceMap": false,
+    "removeComments": true,
+    "noEmitOnError": false,
+    "preserveConstEnums": false,
+    "stripInternal": true,
+    "importHelpers": true,
+    "inlineSourceMap": false,
+    "inlineSources": false
+  },
+  "include": [
+    "src/index.ts",
+    "src/cli.ts",
+    "src/analytics/**/*.ts",
+    "src/commands/**/*.ts",
+    "src/data-sources/**/*.ts",
+    "src/reports/**/*.ts",
+    "src/types/**/*.ts",
+    "src/utils/config.ts",
+    "src/utils/logger.ts",
+    "src/utils/error-handler.ts",
+    "src/utils/text-charts.ts",
+    "src/utils/cli-helpers.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "tests",
+    "scripts",
+    "docs",
+    "demo",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.d.ts",
+    "src/utils/error-handling-demo.ts",
+    "src/utils/error-messages.ts",
+    "src/utils/error-reporter.ts",
+    "src/utils/troubleshooter.ts"
+  ]
+}

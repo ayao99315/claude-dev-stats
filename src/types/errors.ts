@@ -24,7 +24,7 @@ export enum ErrorLevel {
  */
 export enum ErrorCategory {
   /** 配置错误 */
-  CONFIG = 'config',
+  CONFIGURATION = 'configuration',
   /** 数据源错误 */
   DATA_SOURCE = 'data_source',
   /** 文件系统错误 */
@@ -39,6 +39,8 @@ export enum ErrorCategory {
   PERMISSION = 'permission',
   /** 系统错误 */
   SYSTEM = 'system',
+  /** 用户输入错误 */
+  USER_INPUT = 'user_input',
   /** 用户错误 */
   USER = 'user',
   /** 未知错误 */
@@ -60,6 +62,8 @@ export enum ErrorCode {
   DATA_SOURCE_CONNECTION_FAILED = 2002,
   DATA_SOURCE_READ_FAILED = 2003,
   DATA_SOURCE_INVALID_FORMAT = 2004,
+  DATA_FETCH_FAILED = 2005,
+  DATA_AGGREGATION_FAILED = 2006,
 
   // 文件系统相关错误 (3000-3099)
   FILE_NOT_FOUND = 3001,
@@ -86,6 +90,7 @@ export enum ErrorCode {
   SCHEMA_VALIDATION_FAILED = 6002,
   TYPE_VALIDATION_FAILED = 6003,
   RANGE_VALIDATION_FAILED = 6004,
+  PARAMETER_VALIDATION_FAILED = 6005,
 
   // 权限相关错误 (7000-7099)
   ACCESS_DENIED = 7001,
@@ -252,7 +257,7 @@ export class ConfigError extends AppError {
     super(
       message,
       code || ErrorCode.CONFIG_INVALID,
-      ErrorCategory.CONFIG,
+      ErrorCategory.CONFIGURATION,
       ErrorLevel.ERROR,
       context,
       originalError

@@ -6,14 +6,18 @@
  * - 日志系统
  * - 错误处理
  * - 文本图表生成
- * - 性能优化工具
- * - 缓存机制
+ * - CLI辅助工具
+ * - 错误消息格式化
+ * - 智能故障排除
+ * - 错误报告收集
  */
 
-// 已实现的工具模块
+// 基础工具模块
 export { ConfigManager, configManager } from './config';
 export { Logger, logger } from './logger';
 export { ErrorHandler, errorHandler } from './error-handler';
+
+// 可视化工具
 export { 
   TextChartGenerator,
   BarChartGenerator,
@@ -23,11 +27,47 @@ export {
   CHART_THEMES
 } from './text-charts';
 
-// TODO: 以下工具模块将在后续任务中实现
-// export { CacheManager } from './cache';
-// export { PerformanceMonitor } from './performance';
-// export { DataValidator } from './validators';
-// export { FileHelper } from './file-helper';
-// export { CliHelpers } from './cli-helpers';
-// export { ErrorMessages } from './error-messages';
-// export { Troubleshooter } from './troubleshooter';
+// CLI交互工具
+export {
+  PaginationManager,
+  SmartHintProvider,
+  TerminalSizeDetector,
+  OutputFormatter,
+  KeyboardHandler
+} from './cli-helpers';
+
+// 错误处理和用户体验
+export {
+  ErrorMessageFormatter,
+  errorMessageFormatter,
+  formatError,
+  formatErrorSimple,
+  ErrorMessageLanguage,
+  ErrorMessageTemplate,
+  ErrorMessageConfig,
+  DEFAULT_ERROR_MESSAGE_CONFIG,
+  ERROR_LEVEL_MAPPING,
+  ERROR_CATEGORY_ICONS
+} from './error-messages';
+
+export {
+  Troubleshooter,
+  troubleshooter,
+  DiagnosticLevel,
+  DiagnosticResult,
+  TroubleshootingReport,
+  SystemEnvironment
+} from './troubleshooter';
+
+export {
+  ErrorReporter,
+  errorReporter,
+  ErrorReport,
+  SystemInfo,
+  ErrorDetails,
+  ContextInfo,
+  UserFeedback,
+  PrivacySettings,
+  ErrorStatistics,
+  DEFAULT_PRIVACY_SETTINGS
+} from './error-reporter';

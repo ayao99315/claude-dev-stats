@@ -1,41 +1,72 @@
-# Source files
+# 源代码目录（已编译到dist）
 src/
 tests/
-scripts/test-runner.js
+scripts/
+docs/
+demo/
 
-# Development files
+# 开发和构建文件
 .eslintrc.js
 .prettierrc.js
 jest.config.js
 tsconfig.json
-
-# Documentation (keeping only essential)
-docs/
-*.md
-!README.md
-!CLAUDE.md
-
-# Build artifacts  
+tsconfig.prod.json
 *.tsbuildinfo
-coverage/
 
-# Development dependencies
+# 测试和覆盖率
+coverage/
+.nyc_output/
+test-results/
+
+# 环境和配置
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# 编辑器配置
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# OS files
+# 操作系统文件
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Temporary
-tmp/
-temp/
-*.tmp
-
-# Logs
+# 日志文件
 logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Git
+# 缓存目录
+.npm/
+.yarn/
+.cache/
+.parcel-cache/
+.tscache/
+
+# 临时文件
+.tmp/
+tmp/
+temp/
+
+# 依赖管理
+node_modules/
+
+# Git相关
 .git/
 .gitignore
+
+# 开发工具
+.eslintcache
+.prettierignore
+
+# 其他
+*.tgz
+*.tar.gz

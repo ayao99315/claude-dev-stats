@@ -1,0 +1,28 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "sourceMap": false,
+    "removeComments": true,
+    "noEmitOnError": true,
+    "preserveConstEnums": false,
+    "stripInternal": true,
+    "importHelpers": true,
+    "inlineSourceMap": false,
+    "inlineSources": false
+  },
+  "exclude": [
+    "node_modules",
+    "tests",
+    "scripts",
+    "docs",
+    "demo",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.d.ts",
+    "src/utils/error-handling-demo.ts",
+    "src/utils/error-messages.ts",
+    "src/utils/error-reporter.ts",
+    "src/utils/troubleshooter.ts"
+  ]
+}
