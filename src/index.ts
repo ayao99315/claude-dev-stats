@@ -35,9 +35,9 @@ export {
   RecommendationEngine
 } from './analytics';
 
-// TODO: 以下组件将在后续任务中实现
-// export { CommandInterface } from './commands/cli';
-// export { ReportGenerator } from './reports/generator';
+// 用户交互组件
+export { CommandLineInterface } from './commands/cli';
+export { ReportGenerator } from './reports/generator';
 
 /**
  * 版本信息

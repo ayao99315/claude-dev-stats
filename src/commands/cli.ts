@@ -56,7 +56,7 @@ export class CommandLineInterface {
   private setupProgram(): void {
     this.program
       .name('cc-stats')
-      .description('Claude Code 开发统计与分析工具')
+      .description('Claude Code 开发统计与分析工具 (claude-dev-stats)')
       .version('0.9.0')
       .option('-v, --verbose', '启用详细输出')
       .option('--no-color', '禁用彩色输出')

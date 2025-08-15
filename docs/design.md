@@ -915,9 +915,10 @@ Data Source: ${data_source} | Generated: ${new Date().toLocaleString('en-US')}
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "commander": "^9.0.0",
+    "commander": "^11.1.0",
     "chalk": "^4.1.2",
-    "cli-table3": "^0.6.3"
+    "winston": "^3.11.0",
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
@@ -1152,6 +1153,6 @@ Phase 3: 用户界面完善 (1周)
 
 ---
 
-*技术设计文档 v2.0 TypeScript 版*  
+*技术设计文档 v2.1 TypeScript 版*  
 *基于现代化技术栈的数据分析方案*  
-*2024年技术架构优化版*
+*2025年技术架构优化版*

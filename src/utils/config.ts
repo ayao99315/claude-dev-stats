@@ -401,7 +401,20 @@ export class ConfigManager {
    * 获取数据源配置（简化版）
    */
   getDataSourceConfig(): { cost_api: boolean; opentelemetry: boolean } {
-    const config = this.getConfig();
+    // 如果配置未加载，先尝试加载
+    if (!this.isLoaded) {
+      try {
+        // 同步加载配置（使用默认配置）
+        this.config = { ...DEFAULT_APP_CONFIG };
+        this.isLoaded = true;
+      } catch (error) {
+        console.warn('加载配置失败，使用默认配置:', error);
+        this.config = { ...DEFAULT_APP_CONFIG };
+        this.isLoaded = true;
+      }
+    }
+    
+    const config = this.config;
     return {
       cost_api: config.data_sources?.cost_api ?? true,
       opentelemetry: config.data_sources?.opentelemetry ?? false

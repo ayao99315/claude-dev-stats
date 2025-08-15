@@ -81,7 +81,7 @@ function copyFiles() {
   // 复制package.json的简化版本
   const packageJson = JSON.parse(fs.readFileSync(path.join(PROJECT_ROOT, 'package.json'), 'utf8'));
   
-  // 移除开发相关的字段
+  // 移除开发相关的字段，调整路径
   const productionPackageJson = {
     name: packageJson.name,
     version: packageJson.version,
@@ -89,9 +89,11 @@ function copyFiles() {
     homepage: packageJson.homepage,
     repository: packageJson.repository,
     bugs: packageJson.bugs,
-    main: packageJson.main,
-    types: packageJson.types,
-    bin: packageJson.bin,
+    main: "index.js",  // 在dist目录内，所以使用相对路径
+    types: "index.d.ts",  // 在dist目录内，所以使用相对路径
+    bin: {
+      "cc-stats": "./cli.js"  // 在dist目录内，所以使用相对路径
+    },
     files: packageJson.files,
     keywords: packageJson.keywords,
     author: packageJson.author,

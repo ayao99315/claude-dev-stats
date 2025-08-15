@@ -49,7 +49,8 @@ export class AnalyticsEngine {
     this.recommendationEngine = new RecommendationEngine();
     this.configManager = new ConfigManager();
     
-    this.config = this.loadAnalyticsConfig();
+    // 使用默认配置初始化，稍后在需要时加载实际配置
+    this.config = this.getDefaultAnalyticsConfig();
     this.logger.info('分析引擎初始化完成');
   }
 
@@ -62,6 +63,9 @@ export class AnalyticsEngine {
     this.logger.info('开始生成分析报告', { request });
 
     try {
+      // 0. 确保配置已加载
+      this.config = await this.loadAnalyticsConfig();
+      
       // 1. 解析时间范围
       const timeframe = this.parseTimeframe(request.timeframe, request.custom_range);
       
@@ -339,12 +343,10 @@ export class AnalyticsEngine {
   // ===== 私有方法 =====
 
   /**
-   * 加载分析配置
+   * 获取默认分析配置
    * @private
    */
-  private loadAnalyticsConfig(): AnalyticsConfig {
-    const globalConfig = this.configManager.getConfig();
-    
+  private getDefaultAnalyticsConfig(): AnalyticsConfig {
     return {
       enabled_analyses: ['basic', 'efficiency', 'insights', 'trends'],
       line_estimation_model: {
@@ -363,10 +365,47 @@ export class AnalyticsEngine {
       },
       insights_config: {
         enabled: true,
-        language: globalConfig.language || 'zh-CN',
+        language: 'zh-CN',
         max_insights: 8
       }
     };
+  }
+
+  /**
+   * 加载分析配置
+   * @private
+   */
+  private async loadAnalyticsConfig(): Promise<AnalyticsConfig> {
+    try {
+      await this.configManager.loadConfig();
+      const globalConfig = this.configManager.getConfig();
+      
+      return {
+        enabled_analyses: ['basic', 'efficiency', 'insights', 'trends'],
+        line_estimation_model: {
+          'Edit': 15,
+          'MultiEdit': 35,
+          'Write': 60,
+          'Task': 40,
+          'Read': 0,
+          'Bash': 8,
+          'Grep': 0
+        },
+        productivity_weights: {
+          token_weight: 0.3,
+          lines_weight: 0.4,
+          tools_weight: 0.2
+        },
+        insights_config: {
+          enabled: true,
+          language: globalConfig.language || 'zh-CN',
+          max_insights: 8
+        }
+      };
+    } catch (error) {
+      this.logger.warn('加载配置失败，使用默认配置', error);
+      return this.getDefaultAnalyticsConfig();
+    }
   }
 
   /**

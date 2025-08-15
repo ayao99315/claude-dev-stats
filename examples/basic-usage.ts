@@ -20,107 +20,63 @@ async function basicUsageExample() {
   try {
     // 1. 初始化数据管理器
     console.log('📊 初始化数据管理器...');
-    const dataManager = new SimplifiedDataManager({
-      costApiEnabled: true,
-      opentelemetryEnabled: false,
-      projectPath: process.cwd()
-    });
+    const dataManager = new SimplifiedDataManager();
 
-    // 2. 检查数据源可用性
-    console.log('🔍 检查数据源可用性...');
-    const status = await dataManager.checkDataSourceAvailability();
-    
-    console.log(`Cost API: ${status.costApi.available ? '✅ 可用' : '❌ 不可用'}`);
-    console.log(`OpenTelemetry: ${status.opentelemetry.available ? '✅ 可用' : '❌ 不可用'}`);
-    
-    if (status.recommendations.length > 0) {
-      console.log('💡 建议:', status.recommendations.join(', '));
-    }
-    console.log();
-
-    // 3. 获取使用数据
+    // 2. 获取使用数据
     console.log('📈 获取使用统计数据...');
-    const usageData = await dataManager.getUsageStats({
-      includeSystemData: false
-    });
+    const usageData = await dataManager.getUsageStats(process.cwd());
 
-    console.log(`✅ 获取到 ${usageData.length} 条使用记录\n`);
+    console.log(`✅ 获取到使用数据\n`);
 
-    // 4. 创建分析引擎
+    // 3. 创建分析引擎
     console.log('🔬 初始化分析引擎...');
-    const analytics = new AnalyticsEngine(dataManager, {
-      cacheEnabled: true,
-      cacheTTL: 300
-    });
+    const analytics = new AnalyticsEngine();
 
-    // 5. 生成基础统计
-    console.log('📊 计算基础统计信息...');
-    const basicStats = await analytics.calculateBasicStats(usageData);
+    // 4. 生成完整分析报告
+    console.log('📊 生成分析报告...');
+    const analysisRequest = {
+      project_path: process.cwd(),
+      timeframe: 'today',
+      analysis_types: ['basic', 'efficiency', 'trends', 'insights']
+    };
+    
+    const analysisResult = await analytics.generateAnalysisReport(analysisRequest);
     
     console.log('=== 基础统计结果 ===');
-    console.log(`总会话数: ${basicStats.totalSessions}`);
-    console.log(`总活跃时间: ${(basicStats.totalActiveTime / 3600).toFixed(2)} 小时`);
-    console.log(`总Token数: ${basicStats.totalTokens.toLocaleString()}`);
-    console.log(`总成本: $${basicStats.totalCost.toFixed(4)}`);
-    console.log(`处理文件数: ${basicStats.totalFiles}`);
+    console.log(`总请求数: ${analysisResult.basic_stats.total_requests}`);
+    console.log(`总Token数: ${analysisResult.basic_stats.total_tokens.toLocaleString()}`);
+    console.log(`总成本: $${analysisResult.basic_stats.total_cost.toFixed(4)}`);
     console.log();
 
-    // 6. 计算效率指标
-    console.log('⚡ 计算效率指标...');
-    const efficiency = await analytics.calculateEfficiencyMetrics(usageData);
-    
-    console.log('=== 效率分析结果 ===');
-    console.log(`每小时Token数: ${efficiency.tokensPerHour.toFixed(0)}`);
-    console.log(`估算每小时代码行数: ${efficiency.estimatedLinesPerHour.toFixed(0)}`);
-    console.log(`生产力评分: ${efficiency.productivityScore.toFixed(1)}/10`);
-    console.log(`效率等级: ${efficiency.efficiencyRating}`);
-    console.log();
+    // 5. 显示效率指标
+    if (analysisResult.efficiency) {
+      console.log('=== 效率分析结果 ===');
+      console.log(`生产力评分: ${analysisResult.efficiency.productivity_score.toFixed(1)}/10`);
+      console.log(`估算代码行数: ${analysisResult.efficiency.estimated_lines_generated}`);
+      console.log();
+    }
 
-    // 7. 生成智能洞察
-    console.log('🧠 生成智能洞察...');
-    const trends = await analytics.analyzeTrends(usageData);
-    const insights = await analytics.generateInsights(basicStats, efficiency, trends);
-    
-    console.log('=== 智能洞察 ===');
-    if (insights.primaryInsights.length > 0) {
-      insights.primaryInsights.slice(0, 3).forEach((insight, index) => {
+    // 6. 显示智能洞察
+    if (analysisResult.insights && analysisResult.insights.primary_insights.length > 0) {
+      console.log('=== 智能洞察 ===');
+      analysisResult.insights.primary_insights.slice(0, 3).forEach((insight, index) => {
         console.log(`${index + 1}. ${insight.message}`);
       });
+      console.log();
     }
-    console.log();
 
-    // 8. 生成报告
-    console.log('📄 生成报告...');
-    const reportGenerator = new ReportGenerator({
-      language: 'zh-CN',
-      cacheEnabled: true
-    });
+    // 7. 生成报告
+    console.log('📄 生成格式化报告...');
+    const reportGenerator = new ReportGenerator();
 
-    const fullReport = await analytics.generateFullReport(usageData);
     const formattedReport = await reportGenerator.generateReport(
-      fullReport,
-      'table'
+      analysisResult,
+      'table',
+      { language: 'zh-CN' }
     );
 
     console.log('=== 生成的报告预览 ===');
     console.log(formattedReport.content.substring(0, 500) + '...');
-    console.log();
-
-    // 9. 展示不同格式的报告
-    console.log('📊 展示不同格式的报告...');
-    
-    // 简要格式
-    const simpleReport = await reportGenerator.generateReport(fullReport, 'simple');
-    console.log('=== 简要格式 ===');
-    console.log(simpleReport.content);
-    console.log();
-
-    // JSON格式（用于程序处理）
-    const jsonReport = await reportGenerator.generateReport(fullReport, 'json');
-    const jsonData = JSON.parse(jsonReport.content);
-    console.log('=== JSON格式数据结构 ===');
-    console.log(`数据点: ${jsonData.metadata.totalDataPoints}`);
-    console.log(`时间范围: ${jsonData.metadata.dataRange.start} 到 ${jsonData.metadata.dataRange.end}`);
     console.log();
 
     console.log('✅ 基础用法演示完成！');

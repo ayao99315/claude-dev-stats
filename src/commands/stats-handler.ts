@@ -84,7 +84,7 @@ export class StatsHandler {
 
       // 生成报告
       const reportConfig = {
-        type: options.summary ? 'summary' : ('comprehensive' as 'summary' | 'comprehensive' | 'daily' | 'weekly' | 'monthly'),
+        type: options.summary ? 'efficiency' : 'efficiency', // 使用 efficiency 模板代替 project
         format: (options.format || 'table') as 'detailed' | 'table' | 'json' | 'markdown' | 'html' | 'csv' | 'compact' | 'ascii' | 'unicode',
         language: (options.language || 'zh-CN') as 'zh-CN' | 'en-US',
         include_charts: options.format === 'chart' || false,
@@ -181,7 +181,7 @@ export class StatsHandler {
       const quickResult = await this.analyticsEngine.quickAnalysis(options.project);
       
       const reportConfig = this.createReportConfig(
-        'comprehensive',
+        'efficiency',
         options.format || 'table',
         options.language || 'zh-CN'
       );
@@ -273,7 +273,7 @@ export class StatsHandler {
       };
 
       const reportConfig = this.createReportConfig(
-        'comprehensive',
+        'efficiency',
         options.format || 'table',
         options.language || 'zh-CN'
       );
@@ -339,7 +339,7 @@ export class StatsHandler {
       };
 
       const reportConfig = this.createReportConfig(
-        'comprehensive',
+        'efficiency',
         options.format || 'table',
         options.language || 'zh-CN'
       );
@@ -397,7 +397,7 @@ export class StatsHandler {
       };
 
       const reportConfig = this.createReportConfig(
-        'comprehensive',
+        'efficiency',
         options.format || 'table',
         options.language || 'zh-CN'
       );
@@ -444,7 +444,7 @@ export class StatsHandler {
       };
 
       const reportConfig = this.createReportConfig(
-        'comprehensive',
+        'efficiency',
         options.format || 'table',
         options.language || 'zh-CN'
       );
@@ -484,7 +484,7 @@ export class StatsHandler {
       const analysisResult = await this.analyticsEngine.generateAnalysisReport(analysisRequest);
       
       const reportConfig = {
-        type: 'comprehensive' as 'summary' | 'comprehensive' | 'daily' | 'weekly' | 'monthly',
+        type: 'efficiency' as 'summary' | 'efficiency' | 'daily' | 'weekly' | 'monthly',
         format: (options.format || 'detailed') as 'detailed' | 'table' | 'json' | 'markdown' | 'html' | 'csv' | 'compact' | 'ascii' | 'unicode',
         language: (options.language || 'zh-CN') as 'zh-CN' | 'en-US'
       };
@@ -535,7 +535,7 @@ export class StatsHandler {
       } else {
         // 对于其他格式，使用报告生成器
         const reportConfig = this.createReportConfig(
-          'comprehensive',
+          'efficiency',
           'detailed',
           options.language || 'zh-CN'
         );
@@ -641,7 +641,7 @@ export class StatsHandler {
   ): ReportConfig {
     // 映射到正确的报告类型
     const reportType = type === 'summary' ? 'efficiency' : 
-                      type === 'comprehensive' ? 'efficiency' :
+                      type === 'efficiency' ? 'efficiency' :
                       type as 'daily' | 'weekly' | 'monthly' | 'project' | 'efficiency' | 'trends' | 'tools' | 'cost' | 'insights';
     
     // 映射到正确的格式
