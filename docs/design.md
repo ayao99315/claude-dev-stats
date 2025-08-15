@@ -901,7 +901,6 @@ Data Source: ${data_source} | Generated: ${new Date().toLocaleString('en-US')}
   "scripts": {
     "build": "tsc",
     "dev": "ts-node src/index.ts",
-    "test": "jest",
     "lint": "eslint src/**/*.ts",
     "install-commands": "node scripts/install-commands.js",
     "setup": "npm run build && npm run install-commands"
@@ -924,8 +923,6 @@ Data Source: ${data_source} | Generated: ${new Date().toLocaleString('en-US')}
     "@types/node": "^18.0.0",
     "typescript": "^4.9.0",
     "ts-node": "^10.9.0",
-    "jest": "^29.0.0",
-    "@types/jest": "^29.0.0",
     "eslint": "^8.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0"
@@ -1057,7 +1054,7 @@ configure_system() {
 verify_installation() {
     echo "🔍 验证安装..."
     
-    # 测试 Cost API 可用性
+    # 验证 Cost API 可用性
     if claude cost --help &>/dev/null; then
         echo "✅ Cost API 可用"
     else

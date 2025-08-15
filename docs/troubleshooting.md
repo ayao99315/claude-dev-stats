@@ -250,7 +250,7 @@ claude auth status
 # 5. 重新认证
 claude auth login
 
-# 6. 测试Cost API
+# 6. 验证Cost API
 claude cost --project . --format json
 ```
 
@@ -371,7 +371,7 @@ npm run build
 ls -la dist/
 find dist/ -name "*.js" | head -10
 
-# 4. 使用绝对路径测试
+# 4. 使用绝对路径验证
 node -e "console.log(require('./dist/src/index.js'))"
 
 # 5. 检查package.json导出配置
@@ -396,7 +396,7 @@ export CC_STATS_TIMEOUT=60000  # 60秒
 ping claude.ai
 curl -I https://api.claude.ai
 
-# 3. 使用较小的数据集测试
+# 3. 使用较小的数据集验证
 claude-stats /stats basic --period 1d
 
 # 4. 启用调试模式查看详细信息
@@ -713,7 +713,7 @@ claude-stats /stats check --data-sources
 # 配置验证
 claude-stats /stats check --config
 
-# 性能测试
+# 性能验证
 claude-stats /stats check --performance
 ```
 
@@ -735,7 +735,7 @@ npm list -g --depth=0
 claude --version
 claude auth status
 
-# 网络测试
+# 网络检查
 ping claude.ai
 curl -I https://api.claude.ai
 ```

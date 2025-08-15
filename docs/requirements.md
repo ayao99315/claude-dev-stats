@@ -214,7 +214,7 @@
 
 ### Phase 3: 优化完善（1周）
 - 性能优化和错误处理
-- 跨平台兼容性测试（Windows/macOS/Linux）
+- 跨平台兼容性验证（Windows/macOS/Linux）
 - npm 打包和发布流程
 - 文档和安装脚本
 - 用户体验优化
@@ -238,7 +238,7 @@ claude-dev-stats/
 │   └── utils/            # 工具函数
 ├── dist/                 # 编译后的 JavaScript 文件
 ├── scripts/              # 安装和设置脚本
-├── tests/                # 测试文件（Jest）
+├── docs/                 # 项目文档
 └── examples/             # 使用示例
 ```
 
